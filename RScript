@@ -1,5 +1,5 @@
 -- Valox Hub v1.8.7
--- ALL credits to RS12
+-- ALL credits to Valox Creations
 local DISCORD_LINK = "."
 
 -- ======= Cleanup previous runs =======
@@ -59,7 +59,7 @@ if getgenv().HitboxAdornments then
     end
 end
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/shamai707/RScript/refs/heads/main/RScript"))()
+loadstring(game:HttpGet("https://pastefy.app/JW1n7G8M/raw"))()
 
 getgenv().HitboxAdornments = {}
 
