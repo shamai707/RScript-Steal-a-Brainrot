@@ -8,7 +8,7 @@ if getgenv().Rayfield and type(getgenv().Rayfield.Destroy) == "function" then
 end
 getgenv().Rayfield = nil
 
-if getgenv().Connections then
+if getgenv().Connections then 
     for _, c in pairs(getgenv().Connections) do
         pcall(function() c:Disconnect() end)
     end
