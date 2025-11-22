@@ -1,8 +1,8 @@
 -- Valox Hub v1.8.7
--- כל הקרדיט ל-Valox Creations
+-- ALL credits to Valox Creations
 local DISCORD_LINK = "."
 
--- ======= ניקוי הרצות קודמות =======
+-- ======= Cleanup previous runs =======
 if getgenv().Rayfield and type(getgenv().Rayfield.Destroy) == "function" then
     pcall(function() getgenv().Rayfield:Destroy() end)
 end
@@ -59,7 +59,7 @@ if getgenv().HitboxAdornments then
     end
 end
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/shamai707/RScript/refs/heads/main/RScript"))()
+loadstring(game:HttpGet("https://pastefy.app/JW1n7G8M/raw"))()
 
 getgenv().HitboxAdornments = {}
 
@@ -76,7 +76,7 @@ for _, plr in pairs(game:GetService("Players"):GetPlayers()) do
     end
 end
 
--- ======= הגדרות ברירת מחדל =======
+-- ======= Defaults =======
 getgenv().AimbotSettings = getgenv().AimbotSettings or {
     Enabled = false,
     SmartAimbot = true,
@@ -130,7 +130,7 @@ getgenv().HomeSettings = getgenv().HomeSettings or {
     HitboxSize = 50
 }
 
--- ======= שירותים (Services) =======
+-- ======= Services =======
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local RunService = game:GetService("RunService")
@@ -139,7 +139,7 @@ local Camera = workspace.CurrentCamera
 local VirtualUser = game:GetService("VirtualUser")
 local CoreGui = game:GetService("CoreGui")
 
--- טבלאות זמן ריצה
+-- Runtime tables
 getgenv().ActiveCircles = getgenv().ActiveCircles or {}
 getgenv().ESPBoxes = getgenv().ESPBoxes or {}
 getgenv().ESPNames = getgenv().ESPNames or {}
@@ -148,9 +148,9 @@ getgenv().AntiFlingParts = getgenv().AntiFlingParts or {}
 getgenv().Connections = getgenv().Connections or {}
 getgenv().HitboxAdornments = getgenv().HitboxAdornments or {}
 
-local objectCache = {} -- אחסון מאפיינים מקוריים
+local objectCache = {} -- Store original properties
 
--- ======= פונקציות עזר =======
+-- ======= Helpers =======
 local function DestroyAllCircles()
     for _, c in pairs(getgenv().ActiveCircles) do
         pcall(function() if c and c.Remove then c:Remove() end end)
@@ -244,7 +244,7 @@ local function getAimPartFromName(character, name)
     end
 end
 
--- ======= חומרי פלסטיק (Plastic Materials) =======
+-- ======= Plastic Materials =======
 local function updateWorldObjects()
     if not getgenv().MiscSettings then
         warn("MiscSettings is nil in updateWorldObjects")
@@ -283,23 +283,23 @@ local function updateWorldObjects()
         warn("updateWorldObjects Error: " .. tostring(err))
         pcall(function()
             Rayfield:Notify({
-                Title = "שגיאת Valox Hub",
-                Content = "נכשל בעדכון חומרים: " .. tostring(err),
+                Title = "Valox Hub Error",
+                Content = "Failed to update materials: " .. tostring(err),
                 Duration = 5
             })
         end)
     end
 end
 
--- ======= טעינת Rayfield =======
+-- ======= Load Rayfield =======
 local ok, Rayfield = pcall(function()
     return loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 end)
 if not ok or not Rayfield then
     pcall(function()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "שגיאת Valox Hub",
-            Text = "טעינת ממשק ה-Rayfield נכשלה. בדוק את האקזקיוטור או הרשת שלך.",
+            Title = "Valox Hub Error",
+            Text = "Failed to load Rayfield UI. Check your executor or network.",
             Duration = 5
         })
     end)
@@ -307,16 +307,16 @@ if not ok or not Rayfield then
 end
 getgenv().Rayfield = Rayfield
 
--- ======= בדיקת נייד =======
+-- ======= Mobile check =======
 local isMobile = UserInputService.TouchEnabled or (UserInputService.KeyboardEnabled == false)
 
--- ======= יצירת ממשק משתמש =======
+-- ======= UI Creation =======
 local Window
 local success, err = pcall(function()
     Window = Rayfield:CreateWindow({
         Name = "Valox Hub",
-        LoadingTitle = "טוען Valox Hub",
-        LoadingSubtitle = "מאת Valox Creations",
+        LoadingTitle = "Valox Hub Loading",
+        LoadingSubtitle = "by Valox Creations",
         ConfigurationSaving = { Enabled = true, FolderName = "ValoxHub", FileName = "Settings" },
         KeySystem = false
     })
@@ -324,37 +324,37 @@ end)
 if not success then
     pcall(function()
         game:GetService("StarterGui"):SetCore("SendNotification", {
-            Title = "שגיאת Valox Hub",
-            Text = "יצירת חלון ממשק המשתמש נכשלה: " .. tostring(err),
+            Title = "Valox Hub Error",
+            Text = "Failed to create UI window: " .. tostring(err),
             Duration = 5
         })
     end)
     return
 end
 
--- ======= יצירת כרטיסיות =======
+-- ======= Tab Creation =======
 local success, err = pcall(function()
-    local HomeTab = Window:CreateTab("בית", "home")
+    local HomeTab = Window:CreateTab("Home", "home")
     local AimbotTab, CircleTab, ESPTab, MiscTab, PlayerTab
     if not isMobile then
-        AimbotTab = Window:CreateTab("איימבוט", "target")
-        CircleTab = Window:CreateTab("מעגל", "circle")
+        AimbotTab = Window:CreateTab("Aimbot", "target")
+        CircleTab = Window:CreateTab("Circle", "circle")
     end
     ESPTab = Window:CreateTab("ESP", "eye")
-    MiscTab = Window:CreateTab("שונות", "settings")
-    PlayerTab = Window:CreateTab("שחקן", "user")
+    MiscTab = Window:CreateTab("Misc", "settings")
+    PlayerTab = Window:CreateTab("Player", "user")
 
-    -- ======= כרטיסיית בית: קישור לדיסקורד, מפעיל האבים ויומן שינויים =======
-    HomeTab:CreateSection("קהילה")
+    -- ======= Home Tab: Discord Link, Hub Launcher & Changelog =======
+    HomeTab:CreateSection("Community")
     HomeTab:CreateButton({
-        Name = "העתק קישור",
+        Name = "Copy Link",
         Callback = function()
             local success, err = pcall(function()
                 setclipboard(DISCORD_LINK)
                 if not getgenv().MiscSettings.DisableNotifications then
                     Rayfield:Notify({
                         Title = "Valox Hub",
-                        Content = "קישור הדיסקורד הועתק!",
+                        Content = "Discord link copied to clipboard!",
                         Duration = 3
                     })
                 end
@@ -363,8 +363,8 @@ local success, err = pcall(function()
                 warn("Failed to copy Discord link: " .. tostring(err))
                 if not getgenv().MiscSettings.DisableNotifications then
                     Rayfield:Notify({
-                        Title = "שגיאת Valox Hub",
-                        Content = "העתקת קישור הדיסקורד נכשלה: " .. tostring(err),
+                        Title = "Valox Hub Error",
+                        Content = "Failed to copy Discord link: " .. tostring(err),
                         Duration = 5
                     })
                 end
@@ -372,7 +372,7 @@ local success, err = pcall(function()
         end
     })
 
-    HomeTab:CreateSection("מפעיל האבים")
+    HomeTab:CreateSection("Hub Launcher")
     local hubs = {
         ["H4x Scripts"] = "https://raw.githubusercontent.com/H4xScripts/Loader/refs/heads/main/loader.lua",
         ["VoidWare"] = "https://raw.githubusercontent.com/VapeVoidware/VWExtra/main/NightsInTheForest.lua",
@@ -381,13 +381,13 @@ local success, err = pcall(function()
     }
     for name, url in pairs(hubs) do
         HomeTab:CreateButton({
-            Name = "טען " .. name,
+            Name = "Load " .. name,
             Callback = function()
                 if not url or url == "" then
                     if not getgenv().MiscSettings.DisableNotifications then
                         Rayfield:Notify({
                             Title = "Valox Hub",
-                            Content = "לא הוגדר URL עבור " .. name,
+                            Content = "No URL set for " .. name,
                             Duration = 3
                         })
                     end
@@ -396,7 +396,7 @@ local success, err = pcall(function()
                 if not getgenv().MiscSettings.DisableNotifications then
                     Rayfield:Notify({
                         Title = "Valox Hub",
-                        Content = "טוען " .. name,
+                        Content = "Loading " .. name,
                         Duration = 2
                     })
                 end
@@ -409,7 +409,7 @@ local success, err = pcall(function()
                     if not getgenv().MiscSettings.DisableNotifications then
                         Rayfield:Notify({
                             Title = "Valox Hub",
-                            Content = "טעינת " .. name .. " נכשלה: " .. tostring(err),
+                            Content = "Failed to load " .. name .. ": " .. tostring(err),
                             Duration = 3
                         })
                     end
@@ -417,7 +417,7 @@ local success, err = pcall(function()
                     if not getgenv().MiscSettings.DisableNotifications then
                         Rayfield:Notify({
                             Title = "Valox Hub",
-                            Content = name .. " נטען",
+                            Content = name .. " loaded",
                             Duration = 2
                         })
                     end
@@ -426,126 +426,126 @@ local success, err = pcall(function()
         })
     end
 
-    HomeTab:CreateSection("יומן שינויים ועדכונים")
+    HomeTab:CreateSection("Changelog & Updates")
     HomeTab:CreateParagraph({
-        Title = "יומן שינויים",
+        Title = "Changelog",
         Content = [[
-### גרסה 1.8.7
-- הוסר לחלוטין הניבוי החכם.
-- נוסף כפתור בכרטיסיית 'שונות' לנטרול כל ההתראות.
+### Version 1.8.7
+- Removed smart prediction entirely.
+- Added toggle in Misc tab to disable all notifications.
 
-### גרסה 1.8.6
-- הניבוי החכם נוצר מבוסס מדרג: מותאם ליניארית מ-0 (פינג < 30) ל-0.2 (פינג > 80), עם כפל דינמי מדויק לכל פריים (לדוגמה, ב-50ms ~0.08, ב-51ms ~0.082).
+### Version 1.8.6
+- Made Smart Prediction gradient-based: scales linearly from 0 (ping < 30) to 0.2 (ping > 80), with exact dynamic mult per frame (e.g., at 50ms ~0.08, 51ms ~0.082).
 
-### גרסה 1.8.5
-- נוסף כפתור 'ניבוי חכם' שמחשב הובלה (Lead) על בסיס פינג ומהירות המטרה; מכבה את רשימת הניבוי הרגילה כשהוא מופעל.
-- תוקן הניבוי החכם להשתמש ב-LocalPlayer:GetNetworkPing() והותאם זמן ההובלה לחישוב מדויק (בינוני ב-~55ms).
+### Version 1.8.5
+- Added Smart Prediction toggle that calculates lead based on ping and target velocity; disables standard Prediction dropdown when enabled.
+- Fixed Smart Prediction to use LocalPlayer:GetNetworkPing() and adjusted leadTime for accurate calculation (medium at ~55ms).
 
-### גרסה 1.8.4
-- שונתה המהירות המקסימלית של מעגל הקשת ל-3 לאפקט איטי יותר.
+### Version 1.8.4
+- Changed max Rainbow Circle Speed to 3 for slower effect.
 
-### גרסה 1.8.3
-- הוסרו כל ההתראות הקשורות ליצירת/אתחול ESP לשחקנים ואירועי נעילת איימבוט.
+### Version 1.8.3
+- Removed all notifications related to ESP creation/initialization for players and aimbot lock events.
 
-### גרסה 1.8.2
-- יושמו תיקונים קלים: נוספה תאימות R15/R6 ל-Skeleton ESP, סליידר למהירות קשת בכרטיסיית 'מעגל', ניקוי מטמון חומרי פלסטיק בעת כניסה/יציאה של שחקן, תיקון אתחול objectCache לטיפול תקין ב-UnloadAll.
+### Version 1.8.2
+- Applied easy fixes: Added R15/R6 compatibility for Skeleton ESP, Rainbow Speed slider in Circle tab, Plastic materials cache cleanup on player join/leave, objectCache initialization fix for proper UnloadAll handling.
 
-### גרסה 1.8.1
-- תוקנה שגיאת קריאה חוזרת ב-Skeleton ESP על ידי שיפור טיפול בשגיאות
-- הודרו התראות שגיאה לא קריטיות עבור Skeleton ESP
-- נוסף רישום שגיאות Skeleton ESP לקונסולה במקום התראות ממשק משתמש
-- שופרה אימות הדמות והחלקים ב-Skeleton ESP למניעת שגיאות
+### Version 1.8.1
+- Fixed callback error in Skeleton ESP toggle by improving error handling
+- Suppressed non-critical error notifications for Skeleton ESP
+- Added console logging for Skeleton ESP errors instead of UI notifications
+- Enhanced character and part validation in Skeleton ESP to prevent errors
 
-### גרסה 1.8.0
-- תוקנה אפשרות החלפת הנראות של Skeleton ESP לעדכון מיידי ללא צורך באיפוס
-- הובטח ש-Skeleton ESP יופעל רק עבור שחקנים כאשר הוא מופעל
-- שופרה לולאת הרינדור של Skeleton ESP לאכיפת נראות
-- נוספו התראות דיבוג להפעלת Skeleton ESP ובעיות רינדור
+### Version 1.8.0
+- Fixed Skeleton ESP visibility toggle to update immediately without requiring reset
+- Ensured Skeleton ESP only activates for players when enabled
+- Improved Skeleton ESP render loop to enforce visibility
+- Added debug notifications for Skeleton ESP toggle and render issues
 
-### גרסה 1.7.9
-- נוסף מחיצה "הגדרות תנועה" בכרטיסיית 'שחקן'
-- שופרו כפתורי האיפוס של מהירות הליכה וכוח קפיצה לעדכון ערכים תקין
-- ממיר Hitbox Expander למתג עם סליידר גודל ופונקציונליות יישום/איפוס תקינה
-- תוקנה נראות קווי Skeleton ESP ויישום צבע
-- תוקן Skeleton ESP שלא הציג קווים
-- נוסף מחיצה "הגדרות נוספות" בכרטיסיית 'שחקן' עבור Fly, Noclip, Infinite Jump
-- כפתור 'בטל טעינת סקריפט' הועבר לראש כרטיסיית 'שונות' עם מחיצה
-- נוסף כפתור 'העתק קישור דיסקורד' בכרטיסיית 'בית'
-- אומתה פונקציונליות בורר הצבעים של Skeleton ESP
-- שופר הטיפול בשגיאות עבור Skeleton ESP
+### Version 1.7.9
+- Added "Movement Settings" divider in Player tab
+- Improved Reset buttons for Walkspeed and Jump Power to update values properly
+- Converted Hitbox Expander to toggle with size slider and proper apply/reset functionality
+- Fixed Skeleton ESP line visibility and color application
+- Fixed Skeleton ESP not displaying lines
+- Added "Extra Settings" divider in Player tab for Fly, Noclip, Infinite Jump
+- Moved Unload Script button to top of Misc tab with divider
+- Added Copy Discord Link button in Home tab
+- Verified Skeleton ESP color picker functionality
+- Improved error handling for Skeleton ESP
 
-### גרסה 1.7.8
-- שוחזרו מחיצות כרטיסיות ואלמנטים מאורגנים בממשק המשתמש
-- תוקן בורר הצבעים של Skeleton ESP שלא הגיב
-- תוקן Skeleton ESP שלא הציג קווים
-- נוספו כפתורי 'אפס מהירות הליכה' ו'אפס כוח קפיצה' לכרטיסיית 'שחקן'
-- אומתה פונקציונליות נעילת המטרה של איימבוט
-- שופר הטיפול בשגיאות עבור ESP ובורר הצבעים
+### Version 1.7.8
+- Restored tab dividers and organized UI elements
+- Fixed Skeleton ESP Color Picker not responding
+- Fixed Skeleton ESP not displaying lines
+- Added Reset Walkspeed and Reset Jump Power buttons to Player tab
+- Verified Aimbot Lock Target functionality
+- Improved error handling for ESP and color picker
 
-### גרסה 1.7.7
-- תוקנה כרטיסיית 'שחקן' שלא הופיעה
-- תוקנו הפקדים בכרטיסיית 'שונות' שלא הופיעו
-- תוקנה כרטיסיית ESP (תיבה, שלד, שמות) שלא פעלה
-- שופרה נעילת המטרה של איימבוט לאכיפת FOV
-- נוספו התראות דיבוג לכשלים בכרטיסיות
+### Version 1.7.7
+- Fixed Player tab not appearing
+- Fixed Misc tab controls not showing
+- Fixed ESP tab (Box, Skeleton, Names) not functioning
+- Improved Aimbot Lock Target to enforce FOV
+- Added debug notifications for tab failures
 
-### גרסה 1.7.6
-- תוקנה נעילת המטרה של איימבוט לשמירת נעילה בתוך ה-FOV
-- נוספה התראה לניקוי נעילה
-- אוחד הסקריפט לבלוק יחיד
-- אומתה פונקציונליות 'שונות', 'שחקן' ו-ESP
+### Version 1.7.6
+- Fixed Aimbot Lock Target to maintain lock within FOV
+- Added notification for lock clearing
+- Consolidated script into single block
+- Verified Misc, Player, ESP functionality
 
-### גרסה 1.7.5
-- נוסף מתג 'נעילת מטרה' לאיימבוט
-- נוסף מתג 'שמות ESP'
-- נוסף בורר צבעים נפרד ל-Skeleton ESP
-- כרטיסיית 'שונות' הועברה לפקדים מלאים
-- תוקנו פונקציונליות כרטיסיית 'שחקן' ו-ESP
+### Version 1.7.5
+- Added Aimbot Lock Target toggle
+- Added ESP Names toggle
+- Added separate Skeleton ESP color picker
+- Moved Misc tab to full controls
+- Fixed Player tab and ESP functionality
 
-### גרסה 1.7.4
-- נוספו כפתורי 'מפעיל האבים'
-- תוקנה נראות ה-Hitbox Expander
+### Version 1.7.4
+- Added Hub Launcher buttons
+- Fixed Hitbox Expander visibility
 
-### גרסה 1.7.3
-- נוספו הדפסי דיבוג ליצירת קו
+### Version 1.7.3
+- Added debug prints for line creation
 
-### גרסה 1.7.2
-- תוקנה תיבה אפורה בדמויות שחקנים
-- תוקן Box ESP שלא הופיע
-- אומת ניקוי Anti-Fling
+### Version 1.7.2
+- Fixed grey box in players' characters
+- Fixed Box ESP not appearing
+- Verified Anti-Fling cleanup
 
-### גרסה 1.7.1
-- סודר מחדש יומן השינויים
-- תוקנה שינוי גודל דינמי של Box ESP
-- אומת ניקוי Anti-Fling
+### Version 1.7.1
+- Reordered changelog
+- Fixed Box ESP dynamic sizing
+- Verified Anti-Fling cleanup
 
-### גרסה 1.7.0
-- יומן השינויים הוגדר כניתן לגלילה
-- תוקן ניקוי Anti-Fling
+### Version 1.7.0
+- Made changelog scrollable
+- Fixed Anti-Fling cleanup
 
-### גרסה 1.6.9
-- נוסף ניקוי Hitbox Expander
+### Version 1.6.9
+- Added Hitbox Expander cleanup
 
-### גרסה 1.6.8
-- תוקנו באגים ב-Fly וב-Anti-Fling
+### Version 1.6.8
+- Fixed Fly and Anti-Fling bugs
 
-### גרסה 1.6.7
-- עודכן Fly: מהירות 50-1000, נשמר לאחר מוות
-- נוסף מתג Anti-Fling עם /antion, /antioff
-- Bring All ו-Hitbox Expander הועברו לכרטיסיית 'שונות'
+### Version 1.6.7
+- Updated Fly: speed 50-1000, persists on death
+- Added Anti-Fling toggle with /antion, /antioff
+- Moved Bring All and Hitbox Expander to Misc tab
 
-### גרסה 1.5.5
-- גרסה ראשונית עם כרטיסיות בית, איימבוט, מעגל, ESP, שחקן, שונות
+### Version 1.5.5
+- Initial version with Home, Aimbot, Circle, ESP, Player, Misc tabs
         ]]
     })
 
-    -- ======= כרטיסיית איימבוט (לא לנייד) =======
+    -- ======= Aimbot Tab (Non-Mobile) =======
     local aimConn = nil
     if not isMobile then
         local success, err = pcall(function()
-            AimbotTab:CreateSection("הגדרות איימבוט")
+            AimbotTab:CreateSection("Aimbot Settings")
             AimbotTab:CreateToggle({
-                Name = "אפשר איימבוט",
+                Name = "Enable Aimbot",
                 CurrentValue = getgenv().AimbotSettings.Enabled,
                 Callback = function(v)
                     getgenv().AimbotSettings.Enabled = v
@@ -555,12 +555,12 @@ local success, err = pcall(function()
                 end
             })
             AimbotTab:CreateToggle({
-                Name = "איימבוט חכם",
+                Name = "Smart Aimbot",
                 CurrentValue = getgenv().AimbotSettings.SmartAimbot,
                 Callback = function(v) getgenv().AimbotSettings.SmartAimbot = v end
             })
             AimbotTab:CreateToggle({
-                Name = "נעל מטרה",
+                Name = "Lock Target",
                 CurrentValue = getgenv().AimbotSettings.LockTarget,
                 Callback = function(v)
                     getgenv().AimbotSettings.LockTarget = v
@@ -570,41 +570,41 @@ local success, err = pcall(function()
                 end
             })
             AimbotTab:CreateToggle({
-                Name = "בדיקת קבוצה",
+                Name = "Team Check",
                 CurrentValue = getgenv().AimbotSettings.TeamCheck,
                 Callback = function(v) getgenv().AimbotSettings.TeamCheck = v end
             })
             AimbotTab:CreateDropdown({
-                Name = "ניבוי",
-                Options = {"כבוי", "נמוך", "בינוני", "גבוה"},
+                Name = "Prediction",
+                Options = {"Off", "Low", "Medium", "High"},
                 CurrentOption = {getgenv().AimbotSettings.Prediction},
                 Callback = function(opt) getgenv().AimbotSettings.Prediction = opt[1] end
             })
             AimbotTab:CreateDropdown({
-                Name = "החלקה",
-                Options = {"כבוי", "נמוך", "בינוני", "גבוה"},
+                Name = "Smoothing",
+                Options = {"Off", "Low", "Medium", "High"},
                 CurrentOption = {getgenv().AimbotSettings.Smoothing},
                 Callback = function(opt) getgenv().AimbotSettings.Smoothing = opt[1] end
             })
             AimbotTab:CreateDropdown({
-                Name = "מצב הפעלה",
-                Options = {"החזקה", "החלפה"},
+                Name = "Toggle Mode",
+                Options = {"Hold", "Toggle"},
                 CurrentOption = {getgenv().AimbotSettings.Mode},
                 Callback = function(opt) getgenv().AimbotSettings.Mode = opt[1] end
             })
             AimbotTab:CreateDropdown({
-                Name = "חלק גוף למטרה",
-                Options = {"ראש", "טורסו"},
+                Name = "Target Part",
+                Options = {"Head", "Torso"},
                 CurrentOption = {getgenv().AimbotSettings.TargetPart},
                 Callback = function(opt) getgenv().AimbotSettings.TargetPart = opt[1] end
             })
         end)
         if not success then
-            warn("יצירת כרטיסיית איימבוט נכשלה: " .. tostring(err))
+            warn("AimbotTab creation failed: " .. tostring(err))
             if not getgenv().MiscSettings.DisableNotifications then
                 Rayfield:Notify({
-                    Title = "שגיאת Valox Hub",
-                    Content = "יצירת כרטיסיית איימבוט נכשלה: " .. tostring(err),
+                    Title = "Valox Hub Error",
+                    Content = "Failed to create Aimbot tab: " .. tostring(err),
                     Duration = 5
                 })
             end
@@ -722,52 +722,52 @@ local success, err = pcall(function()
         table.insert(getgenv().Connections, aimConn)
     end
 
-    -- ======= כרטיסיית מעגל (לא לנייד) =======
+    -- ======= Circle Tab (Non-Mobile) =======
     local mainCircle = nil
     local circleConn = nil
     if not isMobile then
         local success, err = pcall(function()
-            CircleTab:CreateSection("הגדרות מעגל")
+            CircleTab:CreateSection("Circle Settings")
             CircleTab:CreateSlider({
-                Name = "FOV (שדה ראייה)",
+                Name = "FOV",
                 Range = {50, 500},
                 Increment = 10,
                 CurrentValue = getgenv().CircleSettings.FOV,
                 Callback = function(v) getgenv().CircleSettings.FOV = v end
             })
             CircleTab:CreateColorPicker({
-                Name = "צבע מעגל",
+                Name = "Circle Color",
                 Color = getgenv().CircleSettings.Color,
                 Callback = function(v)
                     local success, err = pcall(function()
                         getgenv().CircleSettings.Color = v
                     end)
                     if not success then
-                        warn("בורר הצבעים של מעגל נכשל: " .. tostring(err))
+                        warn("Circle Color Picker failed: " .. tostring(err))
                     end
                 end
             })
             CircleTab:CreateToggle({
-                Name = "מעגל קשת",
+                Name = "Rainbow Circle",
                 CurrentValue = getgenv().CircleSettings.Rainbow,
                 Callback = function(v) getgenv().CircleSettings.Rainbow = v end
             })
             CircleTab:CreateSlider({
-                Name = "עובי",
+                Name = "Thickness",
                 Range = {1, 10},
                 Increment = 1,
                 CurrentValue = getgenv().CircleSettings.Thickness,
                 Callback = function(v) getgenv().CircleSettings.Thickness = v end
             })
             CircleTab:CreateSlider({
-                Name = "מהירות קשת",
+                Name = "Rainbow Speed",
                 Range = {1, 3},
                 Increment = 1,
                 CurrentValue = getgenv().CircleSettings.RainbowSpeed,
                 Callback = function(v) getgenv().CircleSettings.RainbowSpeed = v end
             })
             CircleTab:CreateToggle({
-                Name = "הצג מעגל",
+                Name = "Show Circle",
                 CurrentValue = getgenv().CircleSettings.Visible,
                 Callback = function(v)
                     getgenv().CircleSettings.Visible = v
@@ -776,11 +776,11 @@ local success, err = pcall(function()
             })
         end)
         if not success then
-            warn("יצירת כרטיסיית מעגל נכשלה: " .. tostring(err))
+            warn("CircleTab creation failed: " .. tostring(err))
             if not getgenv().MiscSettings.DisableNotifications then
                 Rayfield:Notify({
-                    Title = "שגיאת Valox Hub",
-                    Content = "יצירת כרטיסיית מעגל נכשלה: " .. tostring(err),
+                    Title = "Valox Hub Error",
+                    Content = "Failed to create Circle tab: " .. tostring(err),
                     Duration = 5
                 })
             end
@@ -812,4 +812,864 @@ local success, err = pcall(function()
                 mainCircle.Visible = getgenv().CircleSettings.Visible
                 if getgenv().CircleSettings.Rainbow then
                     local time = tick() * getgenv().CircleSettings.RainbowSpeed
-                    mai
+                    mainCircle.Color = Color3.fromHSV(time % 1, 1, 1)
+                else
+                    mainCircle.Color = getgenv().CircleSettings.Color
+                end
+            end)
+        end)
+        table.insert(getgenv().Connections, circleConn)
+    end
+
+    -- ======= ESP Tab =======
+    local success, err = pcall(function()
+        ESPTab:CreateSection("ESP Settings")
+        ESPTab:CreateToggle({
+            Name = "Box ESP",
+            CurrentValue = getgenv().ESPSettings.Enabled,
+            Callback = function(v)
+                getgenv().ESPSettings.Enabled = v
+                if not v then ClearESPBoxes() end
+            end
+        })
+        ESPTab:CreateToggle({
+            Name = "Skeleton ESP",
+            CurrentValue = getgenv().ESPSettings.SkeletonEnabled,
+            Callback = function(v)
+                local success, err = pcall(function()
+                    getgenv().ESPSettings.SkeletonEnabled = v
+                    if v then
+                        ClearSkeletonLines() -- Clear all existing lines to force reinitialization
+                        for _, plr in pairs(Players:GetPlayers()) do
+                            if plr == LocalPlayer then continue end
+                            if plr.Character then
+                                createSkeletonESP(plr)
+                            end
+                        end
+                    else
+                        ClearSkeletonLines()
+                    end
+                end)
+                if not success then
+                    warn("Skeleton ESP toggle error: " .. tostring(err)) -- Log to console only
+                end
+            end
+        })
+        ESPTab:CreateToggle({
+            Name = "Names ESP",
+            CurrentValue = getgenv().ESPSettings.NamesEnabled,
+            Callback = function(v)
+                getgenv().ESPSettings.NamesEnabled = v
+                if not v then ClearESPNames() end
+            end
+        })
+        ESPTab:CreateColorPicker({
+            Name = "Box/Names ESP Color",
+            Color = getgenv().ESPSettings.Color,
+            Callback = function(v)
+                local success, err = pcall(function()
+                    getgenv().ESPSettings.Color = v
+                end)
+                if not success then
+                    warn("Box/Names ESP Color Picker failed: " .. tostring(err))
+                    if not getgenv().MiscSettings.DisableNotifications then
+                        Rayfield:Notify({
+                            Title = "Valox Hub Error",
+                            Content = "Failed to set Box/Names ESP color: " .. tostring(err),
+                            Duration = 5
+                        })
+                    end
+                end
+            end
+        })
+        ESPTab:CreateColorPicker({
+            Name = "Skeleton ESP Color",
+            Color = getgenv().ESPSettings.SkeletonColor,
+            Callback = function(v)
+                local success, err = pcall(function()
+                    getgenv().ESPSettings.SkeletonColor = v
+                    for plr, data in pairs(getgenv().SkeletonLines) do
+                        for _, line in ipairs(data.Limbs or {}) do
+                            pcall(function() line.Color = v end)
+                        end
+                    end
+                end)
+                if not success then
+                    warn("Skeleton ESP Color Picker failed: " .. tostring(err))
+                    if not getgenv().MiscSettings.DisableNotifications then
+                        Rayfield:Notify({
+                            Title = "Valox Hub Error",
+                            Content = "Failed to set Skeleton ESP color: " .. tostring(err),
+                            Duration = 5
+                        })
+                    end
+                end
+            end
+        })
+        ESPTab:CreateSlider({
+            Name = "Max Distance",
+            Range = {100, 1000},
+            Increment = 10,
+            CurrentValue = getgenv().ESPSettings.MaxDistance,
+            Callback = function(v) getgenv().ESPSettings.MaxDistance = v end
+        })
+    end)
+    if not success then
+        warn("ESPTab creation failed: " .. tostring(err))
+        if not getgenv().MiscSettings.DisableNotifications then
+            Rayfield:Notify({
+                Title = "Valox Hub Error",
+                Content = "Failed to create ESP tab: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+
+    local function createNameESP(plr)
+        if plr == LocalPlayer or not getgenv().ESPSettings.NamesEnabled then return end
+        local char = plr.Character
+        if not char or not char:FindFirstChild("Head") then return end
+        local head = char.Head
+        local billboard = Instance.new("BillboardGui")
+        billboard.Name = "NameESP"
+        billboard.Size = UDim2.new(0, 100, 0, 30)
+        billboard.StudsOffset = Vector3.new(0, 3, 0)
+        billboard.Adornee = head
+        billboard.AlwaysOnTop = true
+        billboard.Parent = CoreGui
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Size = UDim2.new(1, 0, 1, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.Text = plr.Name
+        textLabel.TextColor3 = getgenv().ESPSettings.Color
+        textLabel.TextScaled = true
+        textLabel.Font = Enum.Font.SourceSans
+        textLabel.Parent = billboard
+        getgenv().ESPNames[plr] = billboard
+    end
+
+    local function createSkeletonESP(plr)
+        if plr == LocalPlayer or not getgenv().ESPSettings.SkeletonEnabled then return end
+        local char = plr.Character
+        if not char or not char.Parent or not char:FindFirstChild("HumanoidRootPart") or not char:FindFirstChildOfClass("Humanoid") then return end
+        local success, err = pcall(function()
+            local root = char:FindFirstChild("HumanoidRootPart")
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if not root or not hum or hum.Health <= 0 then return end
+            local isR15 = hum.RigType == Enum.HumanoidRigType.R15
+            local limbs = isR15 and {
+                { "Head", "UpperTorso" },
+                { "UpperTorso", "LowerTorso" },
+                { "LowerTorso", "LeftUpperLeg" },
+                { "LowerTorso", "RightUpperLeg" },
+                { "LeftUpperLeg", "LeftLowerLeg" },
+                { "RightUpperLeg", "RightLowerLeg" },
+                { "LeftLowerLeg", "LeftFoot" },
+                { "RightLowerLeg", "RightFoot" },
+                { "UpperTorso", "LeftUpperArm" },
+                { "UpperTorso", "RightUpperArm" },
+                { "LeftUpperArm", "LeftLowerArm" },
+                { "RightUpperArm", "RightLowerArm" },
+                { "LeftLowerArm", "LeftHand" },
+                { "RightLowerArm", "RightHand" }
+            } or {  -- R6 fallback
+                { "Head", "Torso" },
+                { "Torso", "Left Arm" },
+                { "Torso", "Right Arm" },
+                { "Torso", "Left Leg" },
+                { "Torso", "Right Leg" }
+            }
+            local lines = {}
+            for _, limb in ipairs(limbs) do
+                local part1 = char:FindFirstChild(limb[1])
+                local part2 = char:FindFirstChild(limb[2])
+                if part1 and part2 then
+                    local line = Drawing.new("Line")
+                    line.Visible = getgenv().ESPSettings.SkeletonEnabled
+                    line.Color = getgenv().ESPSettings.SkeletonColor
+                    line.Thickness = 2
+                    line.Transparency = 1
+                    table.insert(lines, line)
+                end
+            end
+            local conn = RunService.RenderStepped:Connect(function()
+                local char = plr.Character
+                local root = char and char:FindFirstChild("HumanoidRootPart")
+                local hum = char and char:FindFirstChildOfClass("Humanoid")
+                local distance = (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and root and (root.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude) or math.huge
+                if not char or not char.Parent or not root or not hum or hum.Health <= 0 or not getgenv().ESPSettings.SkeletonEnabled or distance > getgenv().ESPSettings.MaxDistance then
+                    pcall(function()
+                        for _, line in pairs(lines) do
+                            line.Visible = false
+                            line:Remove()
+                        end
+                        conn:Disconnect()
+                        getgenv().SkeletonLines[plr] = nil
+                    end)
+                    return
+                end
+                local i = 1
+                for _, limb in ipairs(limbs) do
+                    local part1 = char:FindFirstChild(limb[1])
+                    local part2 = char:FindFirstChild(limb[2])
+                    if part1 and part2 and lines[i] then
+                        local success, err = pcall(function()
+                            local pos1, visible1 = Camera:WorldToViewportPoint(part1.Position)
+                            local pos2, visible2 = Camera:WorldToViewportPoint(part2.Position)
+                            lines[i].Visible = getgenv().ESPSettings.SkeletonEnabled and visible1 and visible2 and distance <= getgenv().ESPSettings.MaxDistance
+                            lines[i].From = Vector2.new(pos1.X, pos1.Y)
+                            lines[i].To = Vector2.new(pos2.X, pos2.Y)
+                            lines[i].Color = getgenv().ESPSettings.SkeletonColor
+                            lines[i].Thickness = 2
+                            lines[i].Transparency = 1
+                        end)
+                        if not success then
+                            warn("Skeleton ESP render failed for " .. plr.Name .. ": " .. tostring(err)) -- Log to console only
+                        end
+                        i = i + 1
+                    elseif lines[i] then
+                        lines[i].Visible = false
+                    end
+                end
+            end)
+            getgenv().SkeletonLines[plr] = { Limbs = lines, Connection = conn }
+        end)
+        if not success then
+            warn("Skeleton ESP creation failed for " .. plr.Name .. ": " .. tostring(err)) -- Log to console only
+        end
+    end
+
+    local function updateESP()
+        if not (getgenv().ESPSettings.Enabled or getgenv().ESPSettings.SkeletonEnabled or getgenv().ESPSettings.NamesEnabled) then return end
+        for _, plr in pairs(Players:GetPlayers()) do
+            if plr == LocalPlayer then continue end
+            local char = plr.Character
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
+            local root = char and char:FindFirstChild("HumanoidRootPart")
+            local head = char and char:FindFirstChild("Head")
+            local distance = (LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and root and (root.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude) or math.huge
+            if not char or not hum or not root or hum.Health <= 0 or distance > getgenv().ESPSettings.MaxDistance then
+                if getgenv().ESPBoxes[plr] then
+                    pcall(function() getgenv().ESPBoxes[plr]:Destroy() end)
+                    getgenv().ESPBoxes[plr] = nil
+                end
+                if getgenv().ESPNames[plr] then
+                    pcall(function() getgenv().ESPNames[plr]:Destroy() end)
+                    getgenv().ESPNames[plr] = nil
+                end
+                if getgenv().SkeletonLines[plr] then
+                    pcall(function()
+                        if getgenv().SkeletonLines[plr].Connection then
+                            getgenv().SkeletonLines[plr].Connection:Disconnect()
+                        end
+                        for _, line in pairs(getgenv().SkeletonLines[plr].Limbs or {}) do
+                            pcall(function() line:Remove() end)
+                        end
+                    end)
+                    getgenv().SkeletonLines[plr] = nil
+                end
+                continue
+            end
+            if getgenv().ESPSettings.Enabled and not getgenv().ESPBoxes[plr] then
+                local success, err = pcall(function()
+                    local box = Instance.new("BoxHandleAdornment")
+                    box.Size = root.Size + Vector3.new(2, 4, 2)
+                    box.Adornee = root
+                    box.Color3 = getgenv().ESPSettings.Color
+                    box.Transparency = 0.5
+                    box.AlwaysOnTop = true
+                    box.ZIndex = 5
+                    box.Parent = CoreGui
+                    getgenv().ESPBoxes[plr] = box
+                end)
+                if not success then
+                    warn("Box ESP creation failed for " .. plr.Name .. ": " .. tostring(err))
+                end
+            end
+            if getgenv().ESPSettings.NamesEnabled and not getgenv().ESPNames[plr] and head then
+                local success, err = pcall(function()
+                    createNameESP(plr)
+                end)
+                if not success then
+                    warn("Names ESP creation failed for " .. plr.Name .. ": " .. tostring(err))
+                end
+            end
+            if getgenv().ESPSettings.SkeletonEnabled and not getgenv().SkeletonLines[plr] then
+                createSkeletonESP(plr)
+            end
+            if getgenv().ESPBoxes[plr] then
+                pcall(function()
+                    getgenv().ESPBoxes[plr].Color3 = getgenv().ESPSettings.Color
+                    getgenv().ESPBoxes[plr].Size = root.Size + Vector3.new(2, 4, 2)
+                end)
+            end
+            if getgenv().ESPNames[plr] then
+                pcall(function()
+                    getgenv().ESPNames[plr].TextLabel.TextColor3 = getgenv().ESPSettings.Color
+                    getgenv().ESPNames[plr].Enabled = distance <= getgenv().ESPSettings.MaxDistance
+                end)
+            end
+        end
+    end
+
+    local espConn = RunService.RenderStepped:Connect(updateESP)
+    table.insert(getgenv().Connections, espConn)
+
+    -- ======= Misc Tab =======
+    local success, err = pcall(function()
+        MiscTab:CreateButton({
+            Name = "Unload Script",
+            Callback = UnloadAll
+        })
+        MiscTab:CreateSection("Miscellaneous Settings")
+        MiscTab:CreateToggle({
+            Name = "Anti-AFK",
+            CurrentValue = getgenv().MiscSettings.AntiAFK,
+            Callback = function(v)
+                getgenv().MiscSettings.AntiAFK = v
+                if v then
+                    VirtualUser:CaptureController()
+                    VirtualUser:ClickButton2(Vector2.new())
+                end
+            end
+        })
+        MiscTab:CreateToggle({
+            Name = "Anti-Fling",
+            CurrentValue = getgenv().MiscSettings.AntiFling,
+            Callback = function(v)
+                getgenv().MiscSettings.AntiFling = v
+                if v then
+                    for _, plr in pairs(Players:GetPlayers()) do
+                        if plr == LocalPlayer then continue end
+                        local char = plr.Character
+                        if char and char:FindFirstChild("HumanoidRootPart") then
+                            local root = char.HumanoidRootPart
+                            local part = Instance.new("Part")
+                            part.Size = Vector3.new(2, 2, 1)
+                            part.Position = root.Position
+                            part.Anchored = true
+                            part.Transparency = 1
+                            part.CanCollide = true
+                            part.Parent = workspace
+                            getgenv().AntiFlingParts[plr] = part
+                        end
+                    end
+                else
+                    for plr, part in pairs(getgenv().AntiFlingParts) do
+                        pcall(function() part:Destroy() end)
+                        getgenv().AntiFlingParts[plr] = nil
+                    end
+                end
+            end
+        })
+        MiscTab:CreateToggle({
+            Name = "Plastic Materials",
+            CurrentValue = getgenv().MiscSettings.PlasticMaterialsEnabled,
+            Callback = function(v)
+                getgenv().MiscSettings.PlasticMaterialsEnabled = v
+                updateWorldObjects()
+            end
+        })
+        MiscTab:CreateToggle({
+            Name = "Disable Notifications",
+            CurrentValue = getgenv().MiscSettings.DisableNotifications,
+            Callback = function(v)
+                getgenv().MiscSettings.DisableNotifications = v
+            end
+        })
+        MiscTab:CreateToggle({
+            Name = "Enable Hitbox Expander",
+            CurrentValue = getgenv().HomeSettings.HitboxEnabled,
+            Callback = function(v)
+                getgenv().HomeSettings.HitboxEnabled = v
+                if v then
+                    for _, plr in pairs(Players:GetPlayers()) do
+                        if plr == LocalPlayer then continue end
+                        local char = plr.Character
+                        if char and char:FindFirstChild("HumanoidRootPart") then
+                            local root = char.HumanoidRootPart
+                            local size = getgenv().HomeSettings.HitboxSize
+                            root.Size = Vector3.new(size, size, size)
+                            root.Transparency = 0.7
+                            root.Material = Enum.Material.Neon
+                            root.BrickColor = BrickColor.new("Really red")
+                            local adorn = Instance.new("BoxHandleAdornment")
+                            adorn.Size = root.Size
+                            adorn.Adornee = root
+                            adorn.Color3 = Color3.fromRGB(255, 0, 0)
+                            adorn.Transparency = 0.7
+                            adorn.AlwaysOnTop = false
+                            adorn.ZIndex = 0
+                            adorn.Parent = CoreGui
+                            getgenv().HitboxAdornments[plr] = adorn
+                        end
+                    end
+                else
+                    for _, plr in pairs(Players:GetPlayers()) do
+                        if plr == LocalPlayer then continue end
+                        local char = plr.Character
+                        if char and char:FindFirstChild("HumanoidRootPart") then
+                            local root = char.HumanoidRootPart
+                            root.Size = Vector3.new(2, 2, 1)
+                            root.Transparency = 1
+                            root.Material = Enum.Material.Plastic
+                            root.BrickColor = BrickColor.new("Medium stone grey")
+                            if getgenv().HitboxAdornments[plr] then
+                                getgenv().HitboxAdornments[plr]:Destroy()
+                                getgenv().HitboxAdornments[plr] = nil
+                            end
+                        end
+                    end
+                end
+            end
+        })
+        MiscTab:CreateSlider({
+            Name = "Hitbox Size",
+            Range = {10, 200},
+            Increment = 5,
+            CurrentValue = getgenv().HomeSettings.HitboxSize,
+            Callback = function(v)
+                getgenv().HomeSettings.HitboxSize = v
+                if getgenv().HomeSettings.HitboxEnabled then
+                    for _, plr in pairs(Players:GetPlayers()) do
+                        if plr == LocalPlayer then continue end
+                        local char = plr.Character
+                        if char and char:FindFirstChild("HumanoidRootPart") then
+                            local root = char.HumanoidRootPart
+                            root.Size = Vector3.new(v, v, v)
+                            if getgenv().HitboxAdornments[plr] then
+                                getgenv().HitboxAdornments[plr].Size = root.Size
+                            end
+                        end
+                    end
+                end
+            end
+        })
+        MiscTab:CreateButton({
+            Name = "Bring All",
+            Callback = function()
+                local char = LocalPlayer.Character
+                if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+                local root = char.HumanoidRootPart
+                for _, plr in pairs(Players:GetPlayers()) do
+                    if plr == LocalPlayer then continue end
+                    local pchar = plr.Character
+                    if pchar and pchar:FindFirstChild("HumanoidRootPart") then
+                        pcall(function()
+                            pchar.HumanoidRootPart.CFrame = root.CFrame * CFrame.new(Vector3.new(math.random(-5, 5), 0, math.random(-5, 5)))
+                        end)
+                    end
+                end
+            end
+        })
+    end)
+    if not success then
+        warn("MiscTab creation failed: " .. tostring(err))
+        if not getgenv().MiscSettings.DisableNotifications then
+            Rayfield:Notify({
+                Title = "Valox Hub Error",
+                Content = "Failed to create Misc tab: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+
+    local antiFlingConn = RunService.Stepped:Connect(function()
+        if not getgenv().MiscSettings.AntiFling then return end
+        for plr, part in pairs(getgenv().AntiFlingParts) do
+            local char = plr.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local root = char.HumanoidRootPart
+                pcall(function()
+                    part.Position = root.Position
+                end)
+            else
+                pcall(function() part:Destroy() end)
+                getgenv().AntiFlingParts[plr] = nil
+            end
+        end
+    end)
+    table.insert(getgenv().Connections, antiFlingConn)
+
+    -- ======= Player Tab =======
+    local success, err = pcall(function()
+        PlayerTab:CreateSection("Movement Settings")
+        PlayerTab:CreateToggle({
+            Name = "Walkspeed",
+            CurrentValue = getgenv().PlayerSettings.WalkspeedEnabled,
+            Callback = function(v)
+                getgenv().PlayerSettings.WalkspeedEnabled = v
+            end
+        })
+        PlayerTab:CreateSlider({
+            Name = "Walkspeed Amount",
+            Range = {16, 100},
+            Increment = 1,
+            CurrentValue = getgenv().PlayerSettings.Walkspeed,
+            Callback = function(v) getgenv().PlayerSettings.Walkspeed = v end
+        })
+        PlayerTab:CreateButton({
+            Name = "Reset Walkspeed",
+            Callback = function()
+                getgenv().PlayerSettings.Walkspeed = 16
+                getgenv().PlayerSettings.WalkspeedEnabled = false
+                if not getgenv().MiscSettings.DisableNotifications then
+                    Rayfield:Notify({
+                        Title = "Valox Hub",
+                        Content = "Walkspeed reset to 16.",
+                        Duration = 3
+                    })
+                end
+            end
+        })
+        PlayerTab:CreateToggle({
+            Name = "Jump Power",
+            CurrentValue = getgenv().PlayerSettings.JumpPowerEnabled,
+            Callback = function(v) getgenv().PlayerSettings.JumpPowerEnabled = v end
+        })
+        PlayerTab:CreateSlider({
+            Name = "Jump Power Amount",
+            Range = {50, 200},
+            Increment = 1,
+            CurrentValue = getgenv().PlayerSettings.JumpPower,
+            Callback = function(v) getgenv().PlayerSettings.JumpPower = v end
+        })
+        PlayerTab:CreateButton({
+            Name = "Reset Jump Power",
+            Callback = function()
+                getgenv().PlayerSettings.JumpPower = 50
+                getgenv().PlayerSettings.JumpPowerEnabled = false
+                if not getgenv().MiscSettings.DisableNotifications then
+                    Rayfield:Notify({
+                        Title = "Valox Hub",
+                        Content = "Jump Power reset to 50.",
+                        Duration = 3
+                    })
+                end
+            end
+        })
+        PlayerTab:CreateSection("Extra Settings")
+        PlayerTab:CreateToggle({
+            Name = "Infinite Jump",
+            CurrentValue = getgenv().PlayerSettings.InfiniteJump,
+            Callback = function(v) getgenv().PlayerSettings.InfiniteJump = v end
+        })
+        PlayerTab:CreateToggle({
+            Name = "Noclip",
+            CurrentValue = getgenv().PlayerSettings.NoclipEnabled,
+            Callback = function(v) getgenv().PlayerSettings.NoclipEnabled = v end
+        })
+        PlayerTab:CreateToggle({
+            Name = "Fly",
+            CurrentValue = getgenv().PlayerSettings.FlyEnabled,
+            Callback = function(v)
+                getgenv().PlayerSettings.FlyEnabled = v
+                if not v and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    local root = LocalPlayer.Character.HumanoidRootPart
+                    if root:FindFirstChild("FlyBV") then
+                        root.FlyBV:Destroy()
+                    end
+                end
+            end
+        })
+        PlayerTab:CreateSlider({
+            Name = "Fly Speed",
+            Range = {50, 1000},
+            Increment = 10,
+            CurrentValue = getgenv().PlayerSettings.FlySpeed,
+            Callback = function(v) getgenv().PlayerSettings.FlySpeed = v end
+        })
+    end)
+    if not success then
+        warn("PlayerTab creation failed: " .. tostring(err))
+        if not getgenv().MiscSettings.DisableNotifications then
+            Rayfield:Notify({
+                Title = "Valox Hub Error",
+                Content = "Failed to create Player tab: " .. tostring(err),
+                Duration = 5
+            })
+        end
+    end
+
+    local flyConn = nil
+    local function toggleFly()
+        if not getgenv().PlayerSettings.FlyEnabled then
+            if flyConn then
+                pcall(function() flyConn:Disconnect() end)
+                flyConn = nil
+            end
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local root = LocalPlayer.Character.HumanoidRootPart
+                if root:FindFirstChild("FlyBV") then
+                    root.FlyBV:Destroy()
+                end
+            end
+            return
+        end
+        if flyConn then
+            pcall(function() flyConn:Disconnect() end)
+        end
+        flyConn = RunService.Stepped:Connect(function()
+            local char = LocalPlayer.Character
+            if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+            local root = char.HumanoidRootPart
+            if not root:FindFirstChild("FlyBV") then
+                local bv = Instance.new("BodyVelocity")
+                bv.Name = "FlyBV"
+                bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
+                bv.Velocity = Vector3.new(0, 0, 0)
+                bv.Parent = root
+            end
+            local cam = workspace.CurrentCamera
+            local moveDir = Vector3.new(0, 0, 0)
+            local userInput = UserInputService:GetKeysPressed()
+            for _, input in pairs(userInput) do
+                if input.KeyCode == Enum.KeyCode.W then
+                    moveDir = moveDir + cam.CFrame.LookVector
+                end
+                if input.KeyCode == Enum.KeyCode.S then
+                    moveDir = moveDir - cam.CFrame.LookVector
+                end
+                if input.KeyCode == Enum.KeyCode.A then
+                    moveDir = moveDir - cam.CFrame.RightVector
+                end
+                if input.KeyCode == Enum.KeyCode.D then
+                    moveDir = moveDir + cam.CFrame.RightVector
+                end
+                if input.KeyCode == Enum.KeyCode.Space then
+                    moveDir = moveDir + Vector3.new(0, 1, 0)
+                end
+                if input.KeyCode == Enum.KeyCode.LeftControl then
+                    moveDir = moveDir - Vector3.new(0, 1, 0)
+                end
+            end
+            if moveDir.Magnitude > 0 then
+                moveDir = moveDir.Unit * getgenv().PlayerSettings.FlySpeed
+            end
+            root.FlyBV.Velocity = moveDir
+            root.CFrame = CFrame.new(root.Position) * CFrame.Angles(0, cam.CFrame.Yaw, 0)
+        end)
+        table.insert(getgenv().Connections, flyConn)
+    end
+
+    local playerConn = RunService.Stepped:Connect(function()
+        local char = LocalPlayer.Character
+        local hum = char and char:FindFirstChildOfClass("Humanoid")
+        if hum then
+            pcall(function()
+                if getgenv().PlayerSettings.WalkspeedEnabled then
+                    hum.WalkSpeed = getgenv().PlayerSettings.Walkspeed
+                else
+                    hum.WalkSpeed = 16
+                end
+                if getgenv().PlayerSettings.JumpPowerEnabled then
+                    hum.JumpPower = getgenv().PlayerSettings.JumpPower
+                else
+                    hum.JumpPower = 50
+                end
+            end)
+        end
+        if getgenv().PlayerSettings.NoclipEnabled then
+            for _, part in pairs(char and char:GetDescendants() or {}) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+        end
+        toggleFly()
+    end)
+    table.insert(getgenv().Connections, playerConn)
+
+    local infJumpConn = UserInputService.JumpRequest:Connect(function()
+        if getgenv().PlayerSettings.InfiniteJump and LocalPlayer.Character then
+            local hum = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            if hum then
+                hum:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end
+    end)
+    table.insert(getgenv().Connections, infJumpConn)
+
+    -- ======= Anti-AFK =======
+    local afkConn = Players.LocalPlayer.Idled:Connect(function()
+        if getgenv().MiscSettings.AntiAFK then
+            VirtualUser:CaptureController()
+            VirtualUser:ClickButton2(Vector2.new())
+        end
+    end)
+    table.insert(getgenv().Connections, afkConn)
+
+    -- ======= Player Events =======
+    Players.PlayerAdded:Connect(function(plr)
+        if getgenv().MiscSettings.AntiFling and plr ~= LocalPlayer then
+            local char = plr.Character or plr.CharacterAdded:Wait()
+            local root = char:WaitForChild("HumanoidRootPart")
+            local part = Instance.new("Part")
+            part.Size = Vector3.new(2, 2, 1)
+            part.Position = root.Position
+            part.Anchored = true
+            part.Transparency = 1
+            part.CanCollide = true
+            part.Parent = workspace
+            getgenv().AntiFlingParts[plr] = part
+        end
+        if getgenv().ESPSettings.Enabled then
+            local char = plr.Character or plr.CharacterAdded:Wait()
+            local root = char:WaitForChild("HumanoidRootPart")
+            local success, err = pcall(function()
+                local box = Instance.new("BoxHandleAdornment")
+                box.Size = root.Size + Vector3.new(2, 4, 2)
+                box.Adornee = root
+                box.Color3 = getgenv().ESPSettings.Color
+                box.Transparency = 0.5
+                box.AlwaysOnTop = true
+                box.ZIndex = 5
+                box.Parent = CoreGui
+                getgenv().ESPBoxes[plr] = box
+            end)
+            if not success then
+                warn("Box ESP creation failed for new player " .. plr.Name .. ": " .. tostring(err))
+            end
+        end
+        if getgenv().ESPSettings.NamesEnabled then
+            local success, err = pcall(function()
+                createNameESP(plr)
+            end)
+            if not success then
+                warn("Names ESP creation failed for new player " .. plr.Name .. ": " .. tostring(err))
+            end
+        end
+        if getgenv().ESPSettings.SkeletonEnabled then
+            local char = plr.Character or plr.CharacterAdded:Wait()
+            createSkeletonESP(plr)
+        end
+        if getgenv().HomeSettings.HitboxEnabled then
+            local char = plr.Character or plr.CharacterAdded:Wait()
+            local root = char:WaitForChild("HumanoidRootPart")
+            local success, err = pcall(function()
+                local size = getgenv().HomeSettings.HitboxSize
+                root.Size = Vector3.new(size, size, size)
+                root.Transparency = 0.7
+                root.BrickColor = BrickColor.new("Really red")
+                root.Material = Enum.Material.Neon
+                local adorn = Instance.new("BoxHandleAdornment")
+                adorn.Size = root.Size
+                adorn.Adornee = root
+                adorn.Color3 = Color3.fromRGB(255, 0, 0)
+                adorn.Transparency = 0.7
+                adorn.AlwaysOnTop = false
+                adorn.ZIndex = 0
+                adorn.Parent = CoreGui
+                getgenv().HitboxAdornments[plr] = adorn
+            end)
+            if not success then
+                warn("Hitbox Expander creation failed for new player " .. plr.Name .. ": " .. tostring(err))
+            end
+        end
+    end)
+
+    Players.PlayerRemoving:Connect(function(plr)
+        if getgenv().AimbotSettings.LockedTarget == plr then
+            getgenv().AimbotSettings.LockedTarget = nil
+        end
+        if getgenv().ESPBoxes[plr] then
+            pcall(function() getgenv().ESPBoxes[plr]:Destroy() end)
+            getgenv().ESPBoxes[plr] = nil
+        end
+        if getgenv().ESPNames[plr] then
+            pcall(function() getgenv().ESPNames[plr]:Destroy() end)
+            getgenv().ESPNames[plr] = nil
+        end
+        if getgenv().SkeletonLines[plr] then
+            pcall(function()
+                if getgenv().SkeletonLines[plr].Connection then
+                    getgenv().SkeletonLines[plr].Connection:Disconnect()
+                end
+                for _, line in pairs(getgenv().SkeletonLines[plr].Limbs or {}) do
+                    pcall(function() line:Remove() end)
+                end
+            end)
+            getgenv().SkeletonLines[plr] = nil
+        end
+        if getgenv().AntiFlingParts[plr] then
+            pcall(function() getgenv().AntiFlingParts[plr]:Destroy() end)
+            getgenv().AntiFlingParts[plr] = nil
+        end
+        if getgenv().HitboxAdornments[plr] then
+            pcall(function() getgenv().HitboxAdornments[plr]:Destroy() end)
+            getgenv().HitboxAdornments[plr] = nil
+        end
+        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            local root = plr.Character.HumanoidRootPart
+            root.Size = Vector3.new(2, 2, 1)
+            root.Transparency = 1
+            root.Material = Enum.Material.Plastic
+            root.BrickColor = BrickColor.new("Medium stone grey")
+        end
+    end)
+
+    LocalPlayer.CharacterAdded:Connect(function(char)
+        local root = char:WaitForChild("HumanoidRootPart")
+        if getgenv().PlayerSettings.FlyEnabled then
+            toggleFly()
+        end
+        if getgenv().ESPSettings.SkeletonEnabled then
+            for _, plr in pairs(Players:GetPlayers()) do
+                if plr == LocalPlayer then continue end
+                if plr.Character then
+                    createSkeletonESP(plr)
+                end
+            end
+        end
+    end)
+
+    -- ======= Chat Commands =======
+    local function onChat(msg)
+        if msg == "/antion" then
+            getgenv().MiscSettings.AntiFling = true
+            for _, plr in pairs(Players:GetPlayers()) do
+                if plr == LocalPlayer then continue end
+                local char = plr.Character
+                if char and char:FindFirstChild("HumanoidRootPart") then
+                    local root = char.HumanoidRootPart
+                    local part = Instance.new("Part")
+                    part.Size = Vector3.new(2, 2, 1)
+                    part.Position = root.Position
+                    part.Anchored = true
+                    part.Transparency = 1
+                    part.CanCollide = true
+                    part.Parent = workspace
+                    getgenv().AntiFlingParts[plr] = part
+                end
+            end
+        elseif msg == "/antioff" then
+            getgenv().MiscSettings.AntiFling = false
+            for plr, part in pairs(getgenv().AntiFlingParts) do
+                pcall(function() part:Destroy() end)
+                getgenv().AntiFlingParts[plr] = nil
+            end
+        end
+    end
+
+    LocalPlayer.Chatted:Connect(onChat)
+
+    -- ======= Final Setup =======
+    getgenv().ScriptLoaded = true
+    if not getgenv().MiscSettings.DisableNotifications then
+        Rayfield:Notify({
+            Title = "Valox Hub",
+            Content = "Valox Hub v1.8.7 loaded successfully!",
+            Duration = 5
+        })
+    end
+end) -- Close the pcall block from tab creation
+if not success then
+    warn("Tab creation and setup failed: " .. tostring(err))
+    if not getgenv().MiscSettings.DisableNotifications then
+        Rayfield:Notify({
+            Title = "Valox Hub Error",
+            Content = "Failed to complete script setup: " .. tostring(err),
+            Duration = 5
+        })
+    end
+end
